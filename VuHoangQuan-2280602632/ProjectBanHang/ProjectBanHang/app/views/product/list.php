@@ -185,10 +185,11 @@ h1 {
                     <div class="d-flex gap-2">
                         <a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/edit/<?php echo $product->id; ?>" class="btn btn-warning">Sửa</a>
                         <a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/delete/<?php echo $product->id; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+                        <a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/addToCart/<?php echo $product->id; ?>" class="btn btn-primary btn-sm">Thêm vào giỏ hàng</a>
                     </div>
                 </div>
             </li>
         <?php endforeach; ?>
     </ul>
 </div>
-<?php include 'app/views/shares/footer.php'; ?>
+<?php include 'app/views/shares/footer.php'; ?>                            
