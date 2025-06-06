@@ -14,9 +14,10 @@
         }
 
         .navbar {
-            background-color: #e9ecef;
+            background-color: #dc3545; /* màu đỏ Bootstrap */
             border-radius: 0 0 15px 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
         }
 
         .navbar-brand {
@@ -56,11 +57,36 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/">Danh sách sản phẩm</a>
                     </li>
+                    <?php if (SessionHelper::isAdmin()): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/add">Thêm sản phẩm</a>
                     </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Category/list">Quản lý danh mục</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/cart"> Thêm vào giỏ hàng</a>
+                    </li>                 
+                    <li class="nav-item">
+                    <?php
+                        if(SessionHelper::isLoggedIn()){
+                            echo "<a class='nav-link'>" . htmlspecialchars($_SESSION['username']) . " (" . SessionHelper::getRole() . ")</a>";
+                        }
+                        else{
+                            echo "<a class='nav-link'
+                            href='/pptp-mmm-2280602632\VuHoangQuan-2280602632\ProjectBanHang\ProjectBanHang/account/login'>Login</a>";
+                        }
+                    ?>
+                    </li>
+                    <li class="nav-item">
+                        </a>
+                        <?php
+                            if(SessionHelper::isLoggedIn()){
+                            echo "<a class='nav-link'
+                            href='/pptp-mmm-2280602632\VuHoangQuan-2280602632\ProjectBanHang\ProjectBanHang/account/logout'>Logout</a>";
+                            }
+                        ?>
                     </li>
                 </ul>
             </div>

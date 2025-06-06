@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'app/models/ProductModel.php';
+require_once 'app/helper/SessionHelper.php';
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
@@ -24,3 +25,4 @@ if (!method_exists($controller, $action)) {
 }
 // Gọi action với các tham số còn lại (nếu có)
 call_user_func_array([$controller, $action], array_slice($url, 2));
+
