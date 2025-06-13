@@ -57,49 +57,55 @@ h1 {
 
 
 <div class="container mt-5">
-    <h1>Danh sách sản phẩm</h1>
-    <div class="text-center mb-4">
-        <a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/add" class="btn btn-success">Thêm sản phẩm mới</a>
-    </div>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        <?php foreach ($products as $product): ?>
-            <div class="col">
-                <div class="card h-100 product-card">
-                    <div class="position-relative">
-                        <?php if (!empty($product->is_new)): ?>
-                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">MỚI</span>
-                        <?php endif; ?>
-                        <img src="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/<?php echo $product->image ? htmlspecialchars($product->image) : 'images/no-image.png'; ?>"
-                             class="card-img-top product-img" alt="Hình sản phẩm">
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title fw-bold">
-                            <?php echo htmlspecialchars($product->name); ?>
-                        </h5>
-                        <p class="card-text">Giá từ: <strong><?php echo number_format($product->price, 0, ',', '.'); ?> VNĐ</strong></p>
-                    </div>
-                    <div class="mt-4">
-                        <div class="d-flex gap-2 flex-wrap">
-                        <?php if (SessionHelper::isAdmin()): ?>
-                            <a href="/pptp-mmm-2280602632\VuHoangQuan-2280602632\ProjectBanHang\ProjectBanHang/Product/edit/<?php echo $product->id; ?>"
-                                class="btn btn-warning btn-sm w-100 fw-bold text-white rounded-pill transition-all hover-btn">
-                                <i class="fas fa-edit me-1"></i> Sửa
-                            </a>
-                            <a href="/pptp-mmm-2280602632\VuHoangQuan-2280602632\ProjectBanHang\ProjectBanHang/Product/delete/<?php echo $product->id; ?>"
-                                class="btn btn-danger btn-sm w-100 fw-bold rounded-pill transition-all hover-btn delete-btn">
-                                <i class="fas fa-trash me-1"></i> Xóa
-                            </a>
-                        <?php endif; ?>
-                            <a href="/pptp-mmm-2280602632\VuHoangQuan-2280602632\ProjectBanHang\ProjectBanHang/Product/addToCart/<?php echo $product->id; ?>"
-                                class="btn btn-primary btn-sm w-100 fw-bold rounded-pill transition-all hover-btn">
-                                <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
+<h1>Danh sách sản phẩm</h1>
+
+<a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/add" class="btn btn-success mb-2">Thêm sản phẩm mới</a>
+
+<ul class="list-group" id="product-list">
+    <!-- Danh sách sản phẩm sẽ được tải từ API và hiển thị tại đây -->
+</ul>
 </div>
+
+<?php include 'app/views/shares/footer.php'; ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/webbanhang/api/product')
+    .then(response => response.json())
+    .then(data => {
+        const productList = document.getElementById('product-list');
+        data.forEach(product => {
+            const productItem = document.createElement('li');
+            productItem.className = 'list-group-item';
+            productItem.innerHTML = `
+                <h2><a href="/webbanhang/Product/show/${product.id}">${product.name}</a></h2>
+                <p>${product.description}</p>
+                <p>Giá: ${product.price} VND</p>
+                <p>Danh mục: ${product.category_name}</p>
+                <a href="/webbanhang/Product/edit/${product.id}" class="btn btn-warning">Sửa</a>
+                <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Xóa</button>
+            `;
+            productList.appendChild(productItem);
+        });
+    });
+});
+
+function deleteProduct(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+        fetch(`/webbanhang/api/product/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Product deleted successfully') {
+                location.reload();
+            } else {
+                alert('Xóa sản phẩm thất bại');
+            }
+        });
+    }
+}
+</script>
+
 
 <?php include 'app/views/shares/footer.php'; ?>

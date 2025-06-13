@@ -82,53 +82,81 @@ h1 {
 }
 </style>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Thêm sản phẩm mới</h1>
-    
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul class="mb-0">
-                <?php foreach ($errors as $error): ?>
-                    <li><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></li>
-                <?php endforeach; ?>
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-    
-    <div class="card shadow-sm p-4">
-        <form method="POST" action="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/save" enctype="multipart/form-data" onsubmit="return validateForm();">
-            <div class="mb-3">
-                <label for="name" class="form-label fw-bold">Tên sản phẩm:</label>
-                <input type="text" id="name" name="name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label fw-bold">Mô tả:</label>
-                <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label fw-bold">Giá:</label>
-                <input type="number" id="price" name="price" class="form-control" step="0.01" required>
-            </div>
-            <div class="mb-3">
-                <label for="category_id" class="form-label fw-bold">Danh mục:</label>
-                <select id="category_id" name="category_id" class="form-select" required>
-                    <?php foreach ($categories as $category): ?>
-                        <option value="<?php echo $category->id; ?>">
-                            <?php echo htmlspecialchars($category->name, ENT_QUOTES, 'UTF-8'); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label fw-bold">Hình ảnh:</label>
-                <input type="file" id="image" name="image" class="form-control">
-            </div>
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary px-4">Thêm sản phẩm</button>
-                <a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/list" class="btn btn-outline-secondary px-4">Quay lại danh sách sản phẩm</a>
-            </div>
-        </form>
+<h1>Thêm sản phẩm mới</h1>
+<form id="add-product-form">
+    <div class="form-group">
+        <label for="name">Tên sản phẩm:</label>
+        <input type="text" id="name" name="name" class="form-control" required>
     </div>
-</div>
+    <div class="form-group">
+        <label for="description">Mô tả:</label>
+        <textarea id="description" name="description" class="form-control" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="price">Giá:</label>
+        <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+    </div>
+    <div class="form-group">
+        <label for="category_id">Danh mục:</label>
+        <select id="category_id" name="category_id" class="form-control" required>
+            <!-- Các danh mục sẽ được tải từ API và hiển thị tại đây -->
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+</form>
+
+<a href="/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product/list" class="btn btn-secondary mt-2">Quay lại danh sách sản phẩm</a>
+
+<?php include 'app/views/shares/footer.php'; ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/api/category')
+        .then(response => response.json())
+        .then(data => {
+            const categorySelect = document.getElementById('category_id');
+            data.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            });
+        });
+
+    document.getElementById('add-product-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+jsonData[key] = value;
+        });
+
+        fetch('/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/api/product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(text => {
+        console.log('Raw response:', text); // Log the raw response text
+        try {
+            const data = text;
+            if (data.message === 'Product created successfully') {
+                location.href = '/pptp-mmm-2280602632/VuHoangQuan-2280602632/ProjectBanHang/ProjectBanHang/Product';
+            } else {
+                alert('Thêm sản phẩm thất bại');
+            }
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert('Lỗi: Không thể phân tích JSON từ phản hồi của máy chủ.');
+        }
+    });
+    });
+});
+</script>
+
+
 <?php include 'app/views/shares/footer.php'; ?>
